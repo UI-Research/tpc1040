@@ -1,5 +1,11 @@
 # Who’s afraid of the Form 1040?
 
+Contents:
+  - ("Cloning" this repository)[#cloning-this-repository]
+  - (Saving changes on github)[#saving-changes-on-github]
+  - (Copying changes over to Bacchus)[#copying-changes-over-to-bacchus]
+
+
 ## "Cloning" this repository
 
 If this is the first time you are working with this git repository, we need to create a directory to hold it.
