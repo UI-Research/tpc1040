@@ -423,8 +423,6 @@ var Grid = (function() {
 			setTimeout( $.proxy( function() {
 				// set the height for the preview and the item
 				this.setHeights();
-				// scroll to position the preview in the right place
-				this.positionPreview();
 			}, this ), 15 );
 
 		},
@@ -473,14 +471,6 @@ var Grid = (function() {
 			var bb = details.get(0).getBoundingClientRect();
 
 			details.remove();
-
-			var heightPreview = winsize.height - this.$item.data( 'height' ) - marginExpanded,
-				itemHeight = winsize.height;
-
-			if( heightPreview < settings.minHeight ) {
-				heightPreview = settings.minHeight;
-				itemHeight = settings.minHeight + this.$item.data( 'height' ) + marginExpanded;
-			}
 
 			this.height = bb.height;
 			this.itemHeight = this.$item.data( 'height' ) + bb.height;
