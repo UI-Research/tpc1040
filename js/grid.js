@@ -215,6 +215,15 @@ var Grid = (function() {
 
 	}
 
+	// @bsouthga
+	function getImageHeight($node) {
+		return $node.find('img')
+								.filter(function() {
+									return $(this).css('display') != 'none';
+								})
+								.height();
+	}
+
 	// add more items to the grid.
 	// the new items need to appended to the grid.
 	// after that call Grid.addItems(theItems);
@@ -259,12 +268,22 @@ var Grid = (function() {
 			scrollExtra = 0;
 			previewPos = -1;
 			// save item´s offset
-			saveItemInfo();
+			saveItemInfo(true);
 			getWinSize();
 			var preview = $.data( this, 'preview' );
 			if( typeof preview != 'undefined' ) {
+				preview.calcHeight();
+				preview.setHeights();
 				hidePreview();
 			}
+
+			// force item height to equal image height
+			$('li').each(function() {
+				var li = $(this);
+				var img_height = getImageHeight(li);
+				console.log(img_height);
+				li.css('height', img_height);
+			});
 
 		} );
 
@@ -443,9 +462,11 @@ var Grid = (function() {
 					this.$largeImg.fadeOut( 'fast' );
 				}
 				this.$previewEl.css( 'height', 0 );
+
 				// the current expanded item (might be different from this.$item)
 				var $expandedItem = $items.eq( this.expandedIdx );
-				$expandedItem.css( 'height', $expandedItem.data( 'height' ) ).on( transEndEventName, onEndFn );
+
+				$expandedItem.css( 'height', getImageHeight($expandedItem) ).on( transEndEventName, onEndFn );
 
 				if( !support ) {
 					onEndFn.call();
@@ -473,8 +494,8 @@ var Grid = (function() {
 			details.remove();
 
 			this.height = bb.height;
-			this.itemHeight = this.$item.data( 'height' ) + bb.height;
-
+			// this.itemHeight = this.$item.data( 'height' ) + bb.height + 10;
+			this.itemHeight = getImageHeight(this.$item) + bb.height + 10;
 		},
 		setHeights : function() {
 
@@ -502,9 +523,11 @@ var Grid = (function() {
 			// case 1 : preview height + item height fits in window´s height
 			// case 2 : preview height + item height does not fit in window´s height and preview height is smaller than window´s height
 			// case 3 : preview height + item height does not fit in window´s height and preview height is bigger than window´s height
+			getWinSize();
 			var position = this.$item.data( 'offsetTop' ),
 				previewOffsetT = this.$previewEl.offset().top - scrollExtra,
-				scrollVal = this.height + this.$item.data( 'height' ) + marginExpanded <= winsize.height ? position : this.height < winsize.height ? previewOffsetT - ( winsize.height - this.height ) : previewOffsetT;
+				// scrollVal = this.height + this.$item.data( 'height' ) + marginExpanded <= winsize.height ? position : this.height < winsize.height ? previewOffsetT - ( winsize.height - this.height ) : previewOffsetT;
+				scrollVal = this.height + getImageHeight(this.$item) + marginExpanded <= winsize.height ? position : this.height < winsize.height ? previewOffsetT - ( winsize.height - this.height ) : previewOffsetT;
 
 			$body.animate( { scrollTop : scrollVal }, settings.speed );
 
@@ -516,9 +539,12 @@ var Grid = (function() {
 		getEl : function() {
 			return this.$previewEl;
 		}
-	}
+	};
 
 	return {
+		refresh : function() {
+			hidePreview();
+		},
 		init : init,
 		addItems : addItems
 	};
