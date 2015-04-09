@@ -26,13 +26,15 @@ html {
 }
 .chart{
     max-width: 650px;
-    min-height: 200px;
+    height: 478px;
     width:100%;
 
     margin-left: auto;
     margin-right: auto;
-    display: block;
-    
+    display: block;   
+}
+.chart img{
+ width: 100%;   
 }
 #intro {
      background-image: url("../images/1040.jpg");
